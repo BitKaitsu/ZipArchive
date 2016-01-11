@@ -37,6 +37,7 @@
 
 // Zip
 
+// Without compression setting
 // without password
 + (BOOL)createZipFileAtPath:(NSString *)path withFilesAtPaths:(NSArray *)paths;
 + (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath;
@@ -47,12 +48,23 @@
 + (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath withPassword:(NSString *)password;
 + (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath keepParentDirectory:(BOOL)keepParentDirectory withPassword:(NSString *)password;
 
+// With compression setting
+// without password
++ (BOOL)createZipFileAtPath:(NSString *)path withFilesAtPaths:(NSArray *)paths compression:(int)level;
++ (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath compression:(int)level;
++ (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath keepParentDirectory:(BOOL)keepParentDirector compression:(int)level;
+
+// with password, password could be nil
++ (BOOL)createZipFileAtPath:(NSString *)path withFilesAtPaths:(NSArray *)paths withPassword:(NSString *)password compression:(int)level;
++ (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath withPassword:(NSString *)password compression:(int)level;
++ (BOOL)createZipFileAtPath:(NSString *)path withContentsOfDirectory:(NSString *)directoryPath keepParentDirectory:(BOOL)keepParentDirectory withPassword:(NSString *)password compression:(int)level;
+
 - (instancetype)initWithPath:(NSString *)path;
 @property (NS_NONATOMIC_IOSONLY, readonly, getter = isOpen) BOOL open;
-- (BOOL)writeFile:(NSString *)path withPassword:(NSString *)password;
-- (BOOL)writeFolderAtPath:(NSString *)path withFolderName:(NSString *)folderName;
-- (BOOL)writeFileAtPath:(NSString *)path withFileName:(NSString *)fileName withPassword:(NSString *)password;
-- (BOOL)writeData:(NSData *)data filename:(NSString *)filename withPassword:(NSString *)password;
+- (BOOL)writeFile:(NSString *)path withPassword:(NSString *)password compression:(int)level;
+- (BOOL)writeFolderAtPath:(NSString *)path withFolderName:(NSString *)folderName withPassword:(NSString *)password;
+- (BOOL)writeFileAtPath:(NSString *)path withFileName:(NSString *)fileName withPassword:(NSString *)password compression:(int)level;
+- (BOOL)writeData:(NSData *)data filename:(NSString *)filename withPassword:(NSString *)password compression:(int)level;
 @property (NS_NONATOMIC_IOSONLY, readonly, getter = isClosed) BOOL close;
 
 @end
