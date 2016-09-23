@@ -173,6 +173,19 @@
     XCTAssertTrue([fileManager fileExistsAtPath:testPath], @"LICENSE unzipped");
 }
 
+- (void)testPasswordCheck {
+    NSString *zipPath = [[NSBundle bundleForClass:[self class]] pathForResource:@"TestArchive" ofType:@"zip"];
+    
+    BOOL protected = [SSZipArchive isFilePasswordProtectedAtPath:zipPath];
+    XCTAssertFalse(protected, @"has no password");
+    
+    
+    NSString *zipWithPasswordPath = [[NSBundle bundleForClass:[self class]] pathForResource:@"TestPasswordArchive" ofType:@"zip"];
+    
+    protected = [SSZipArchive isFilePasswordProtectedAtPath:zipWithPasswordPath];
+    XCTAssertTrue(protected, @"has password");
+}
+
 //Temp Disabled test, fix is not yet in the AES version of the unzip lib
 
 //- (void)testUnzippingTruncatedFileFix {
@@ -202,8 +215,8 @@
 
     NSError *error = nil;
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath: testSymlink error: &error];
-
-    XCTAssertTrue(info, @"Symbolic links should persist from the original archive to the outputted files.");
+    BOOL fileIsSymbolicLink = info[NSFileType] == NSFileTypeSymbolicLink;
+    XCTAssertTrue(fileIsSymbolicLink, @"Symbolic links should persist from the original archive to the outputted files.");
 }
 
 - (void)testUnzippingWithRelativeSymlink {
@@ -220,13 +233,13 @@
     NSString *testSymlinkFolder = [NSString pathWithComponents:@[testBasePath, subfolderName, @"folderSymlink"]];
     NSString *testSymlinkFile = [NSString pathWithComponents:@[testBasePath, subfolderName, @"fileSymlink"]];
 
-    BOOL found = [[NSFileManager defaultManager] attributesOfItemAtPath: testSymlinkFile error: nil];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:testSymlinkFile error: nil];
+    BOOL fileIsSymbolicLink = fileAttributes[NSFileType] == NSFileTypeSymbolicLink;
+    XCTAssertTrue(fileIsSymbolicLink, @"Relative symbolic links should persist from the original archive to the outputted files.");
 
-    XCTAssertTrue(found, @"Relative symbolic links should persist from the original archive to the outputted files (and also remain relative).");
-
-    found = [[NSFileManager defaultManager] attributesOfItemAtPath: testSymlinkFolder error: nil];
-
-    XCTAssertTrue(found, @"Relative symbolic links should persist from the original archive to the outputted files (and also remain relative).");
+    NSDictionary *folderAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:testSymlinkFolder error: nil];
+    BOOL folderIsSymbolicLink = folderAttributes[NSFileType] == NSFileTypeSymbolicLink;
+    XCTAssertTrue(folderIsSymbolicLink, @"Relative symbolic links should persist from the original archive to the outputted files.");
 }
 
 - (void)testUnzippingWithUnicodeFilenameInside {
