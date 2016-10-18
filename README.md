@@ -3,6 +3,8 @@
 
 # SSZipArchive
 
+#### This fork adds the option to set the compression level.
+
 ZipArchive is a simple utility class for zipping and unzipping files on iOS and Mac.
 
 - Unzip zip files;
